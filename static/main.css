@@ -1,0 +1,69 @@
+body {
+  position: relative;
+  background: #f8f8f8;
+}
+
+svg {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+rect {
+  fill: #fff;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #eee;
+}
+
+#filename{
+	color: red;
+}
+
+#overview{
+	display: block;
+}
+
+rect, g {
+	overflow: hidden;
+}
+
+.container{
+	text-align: center;
+	margin: 0 auto;
+}
+
+.legend{
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+}
+
+.legend:hover{
+	cursor: pointer;
+	opacity: 0.8;
+}
+
+.legend p {
+	margin-top: 15px;
+	display: inline-block;
+	z-index: -1;
+}
+
+
+.blue{
+	background: #2980b9;
+}
+
+.red{
+	background: #e74c3c;
+}
+.green{
+	background: #2ecc71;
+}
+/*#visualisation{
+	padding: 20px;
+	border: 1px solid #ccc;
+}*/
