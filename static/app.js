@@ -1,6 +1,13 @@
 // load data
 var dataset = [];
 var scale = 2;
+var yMaxDomain = 0;
+var yMinDomain = 0;
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 1100  - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
 $(document).ready(function(){
   $("#file").change(function(){
 
@@ -16,6 +23,7 @@ $(document).ready(function(){
       });
       dataset = data;
       init();
+      init2();
   });
   });
 
@@ -24,20 +32,9 @@ $(document).ready(function(){
 // initialize the svg
 var init = function(){
 
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 1100  - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-// var margin2 = {top: 450, right: 10, bottom: 20, left: 40},
-//     height2 = 500 - margin2.top - margin2.bottom;
-
 var x = d3.time.scale()
     .domain(d3.extent(dataset, function(d) { return d.time;}))
     .range([0, width]);
-
-// var x2 = d3.time.scale()
-//     .domain(d3.extent(dataset, function(d) { return d.time;}))
-//     .range([0, width]);
 
 var maxX = d3.max(dataset, function(d){return d.x});
 var maxY = d3.max(dataset, function(d){return d.y});
@@ -48,7 +45,6 @@ var minZ = d3.min(dataset, function(d){return d.z});
 
 var yMaxDomain = Math.max(maxX, maxY, maxZ) + 1;
 var yMinDomain = Math.min(minX, minY, minZ) - 1;
-
 
 var y = d3.scale.linear()
     .domain([yMinDomain * scale ,yMaxDomain * scale])
@@ -77,8 +73,7 @@ var svg = d3.select("#visualisation").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    svg.call(zoom);
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 svg.append("rect")
     .attr("width", width)
@@ -97,6 +92,7 @@ var area = svg.append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g");
+
 
 var lineFuncX = d3.svg.line()
     .x(function(d, i) {
@@ -134,21 +130,6 @@ var lineFuncX = d3.svg.line()
           .y1(function(d){ return height })
           .y0(function(d){ return y(y.domain()[1]); });
 
-  // area.attr("transform", "translate(71,89)scale(" + 0.4 + ")");
-
-// var areaLimit = 0;
-// var activity_area = d3.svg.area()
-//     .x(function(d, i) { 
-//       return x(10 * i); 
-//     })
-//     .y0(height)
-//     .y1(function(d) { return y(y.domain()[1]); });
-
-//   area.append("path")
-//       .datum(dataset)
-//       .attr("class", "area")
-//       .attr("d", activity_area);
-
   var drawLines = function(line, color){
      area.append('svg:path')
     .attr('d', line(dataset))
@@ -177,18 +158,25 @@ var lineFuncX = d3.svg.line()
     focused();
   });
 
-  d3.select("button").on("click", reset);
-
-  brush.on('brushend', function(){
-    zoom.on("zoom", zoomed);
+  focus.append("g")
+        .attr("class","x brush")
+        .call(brush)
+        .selectAll("rect")
+        .attr("height", height)
+        .style({
+            "fill": "#F64747",
+            "fill-opacity": "0.3"
   });
 
-  brush.on('brush', function(d){  
+  d3.select("button").on("click", reset);
+
+  brush.on('brushend', function(d){  
     k = brush.extent();
+    console.log("extends " + k);
     j = dataset.filter(function(d){
         return k[0] <= d.time && k[1] >=d.time;
     });
-  // console.log(j)
+    paste_on_workspace(j);
 });
 
 
@@ -198,19 +186,6 @@ function zoomed() {
   xAxis.ticks(5 * d3.event.scale);
   svg.select(".x.axis").call(xAxis);
   svg.select(".y.axis").call(yAxis);
-}
-
-function focused() {
-  focus.append("g")
-        .attr("class","x brush")
-        .call(brush)
-        .selectAll("rect")
-        .attr("height", height)
-        .style({
-            "fill": "#F64747",
-            "fill-opacity": "0.3"
-        });
-  console.log("focus");
 }
 
 function reset() {
