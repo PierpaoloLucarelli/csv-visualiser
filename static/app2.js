@@ -27,6 +27,12 @@ function init2(){
 	    .domain([yMinDomain * scale ,yMaxDomain * scale])
 	    .range([height2, 0]);
 
+	var zoom = d3.behavior.zoom()
+    .x(x2)
+    .y(y2)
+    .scaleExtent([-1, 10])
+    .on("zoom", zoomed);
+
 	var xAxis2 = d3.svg.axis()
 	    .scale(x2)
 	    .orient("bottom")
@@ -44,7 +50,8 @@ function init2(){
 	    .attr("width", width + margin2.left + margin2.right)
 	    .attr("height", height2 + margin2.top + margin2.bottom)
 	  .append("g")
-	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+	    .call(zoom);
 
 	svg2.append("rect")
 	    .attr("width", width)
@@ -55,6 +62,8 @@ function init2(){
 	    .attr("transform", "translate(0," + height2 + ")")
 	    .call(xAxis2);
 
+	d3.select("button").on("click", reset);
+
 	svg2.append("g")
 	    .attr("class", "y axis")
 	    .call(yAxis2);
@@ -63,6 +72,27 @@ function init2(){
 	    .attr("width", width)
 	    .attr("height", height2)
 	    .append("g");
+
+
+	function zoomed() {
+  		area2.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  		xAxis2.ticks(5 * d3.event.scale);
+  		svg2.select(".x.axis").call(xAxis2);
+  		svg2.select(".y.axis").call(yAxis2);
+	}
+
+	function reset() {
+  		d3.transition().duration(750).tween("zoom", function() {
+    	var ix = d3.interpolate(x.domain(), d3.extent(dataset, function(d) { return d.time;})),
+        iy = d3.interpolate(y.domain(), [yMinDomain,yMaxDomain]);
+    	return function(t) {
+      		zoom.x(x.domain(ix(t))).y(y.domain(iy(t)));
+      		svg.select(".x.axis").call(xAxis);
+      		svg.select(".y.axis").call(yAxis);
+      		area.attr("transform", "translate([0][0])scale(1)");
+    	};
+  	});
+	}
 }
 
 	 var lineFuncX = d3.svg.line()
@@ -107,6 +137,8 @@ function paste_on_workspace(j){
  	draw_workspace(lineFuncY, '#e74c3c');
 	draw_workspace(lineFuncZ, '#2ecc71');
 }
+
+
 
 
 

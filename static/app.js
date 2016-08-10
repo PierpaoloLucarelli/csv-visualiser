@@ -50,12 +50,6 @@ var y = d3.scale.linear()
     .domain([yMinDomain * scale ,yMaxDomain * scale])
     .range([height, 0]);
 
-var zoom = d3.behavior.zoom()
-    .x(x)
-    .y(y)
-    .scaleExtent([-1, 10])
-    .on("zoom", zoomed);
-
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
@@ -151,13 +145,6 @@ var lineFuncX = d3.svg.line()
         .attr("d", selectArea)
         .attr('fill', 'none');
 
-  svg.on("contextmenu", function(d,i){
-    console.log("mousedown");
-    d3.event.preventDefault();
-    zoom.on("zoom", null);
-    focused();
-  });
-
   focus.append("g")
         .attr("class","x brush")
         .call(brush)
@@ -168,38 +155,16 @@ var lineFuncX = d3.svg.line()
             "fill-opacity": "0.3"
   });
 
-  d3.select("button").on("click", reset);
-
   brush.on('brushend', function(d){  
     k = brush.extent();
-    console.log("extends " + k);
+
+console.log(k[0].getTime());
+
     j = dataset.filter(function(d){
         return k[0] <= d.time && k[1] >=d.time;
     });
     paste_on_workspace(j);
 });
-
-
-function zoomed() {
-  area.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-  focus.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-  xAxis.ticks(5 * d3.event.scale);
-  svg.select(".x.axis").call(xAxis);
-  svg.select(".y.axis").call(yAxis);
-}
-
-function reset() {
-  d3.transition().duration(750).tween("zoom", function() {
-    var ix = d3.interpolate(x.domain(), d3.extent(dataset, function(d) { return d.time;})),
-        iy = d3.interpolate(y.domain(), [yMinDomain,yMaxDomain]);
-    return function(t) {
-      zoom.x(x.domain(ix(t))).y(y.domain(iy(t)));
-      svg.select(".x.axis").call(xAxis);
-      svg.select(".y.axis").call(yAxis);
-      area.attr("transform", "translate([0][0])scale(1)");
-    };
-  });
-}
 
 }
 
