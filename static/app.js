@@ -82,12 +82,6 @@ svg.append("g")
     .attr("class", "y axis")
     .call(yAxis);
 
-var area = svg.append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g");
-
-
 var lineFuncX = d3.svg.line()
     .x(function(d, i) {
       return x(d.time);
@@ -116,7 +110,7 @@ var lineFuncX = d3.svg.line()
   })
     .interpolate('linear');
 
-  var focus = area.append("g");
+  var focus = svg.append("g");
 
   var selectArea = d3.svg.area()
           .interpolate("basis")
@@ -125,7 +119,7 @@ var lineFuncX = d3.svg.line()
           .y0(function(d){ return y(y.domain()[1]); });
 
   var drawLines = function(line, color){
-     area.append('svg:path')
+     svg.append('svg:path')
     .attr('d', line(dataset))
     .attr('stroke', color)
     .attr("opacity","0.6")
@@ -155,14 +149,12 @@ var lineFuncX = d3.svg.line()
             "fill-opacity": "0.3"
   });
 
-  brush.on('brushend', function(d){  
+  $("#import").click(function(d){  
     k = brush.extent();
-
-console.log(k[0].getTime());
-
     j = dataset.filter(function(d){
         return k[0] <= d.time && k[1] >=d.time;
     });
+    console.log(j[0]);
     paste_on_workspace(j);
 });
 

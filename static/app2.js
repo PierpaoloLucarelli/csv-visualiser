@@ -2,6 +2,7 @@ var workspace_data = [];
 var area2;
 var x2;
 var y2;
+var reset;
 
 
 function init2(){
@@ -76,20 +77,21 @@ function init2(){
 
 	function zoomed() {
   		area2.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  		console.log("translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
   		xAxis2.ticks(5 * d3.event.scale);
   		svg2.select(".x.axis").call(xAxis2);
   		svg2.select(".y.axis").call(yAxis2);
 	}
 
-	function reset() {
-  		d3.transition().duration(750).tween("zoom", function() {
-    	var ix = d3.interpolate(x.domain(), d3.extent(dataset, function(d) { return d.time;})),
-        iy = d3.interpolate(y.domain(), [yMinDomain,yMaxDomain]);
+	reset = function() {
+  		d3.transition().duration(150).tween("zoom", function() {
+    	var ix = d3.interpolate(x2.domain(), d3.extent(dataset, function(d) { return d.time;})),
+        iy = d3.interpolate(y2.domain(), [yMinDomain * scale,yMaxDomain * scale]);
     	return function(t) {
-      		zoom.x(x.domain(ix(t))).y(y.domain(iy(t)));
-      		svg.select(".x.axis").call(xAxis);
-      		svg.select(".y.axis").call(yAxis);
-      		area.attr("transform", "translate([0][0])scale(1)");
+      		zoom.x(x2.domain(ix(t))).y(y2.domain(iy(t)));
+      		svg2.select(".x.axis").call(xAxis2);
+      		svg2.select(".y.axis").call(yAxis2);
+      		area2.attr("transform", "translate(0,0)scale(1)");
     	};
   	});
 	}
@@ -132,11 +134,18 @@ var draw_workspace = function(line, color){
   }
 
 function paste_on_workspace(j){
-	workspace_data = j;
-	draw_workspace(lineFuncX, '#2980b9');
- 	draw_workspace(lineFuncY, '#e74c3c');
-	draw_workspace(lineFuncZ, '#2ecc71');
+	reset();
+	setTimeout(function(){
+		workspace_data = j;
+		draw_workspace(lineFuncX, '#2980b9');
+ 		draw_workspace(lineFuncY, '#e74c3c');
+		draw_workspace(lineFuncZ, '#2ecc71');
+	}, 200);
 }
+
+$("#reset").click(function(){
+	reset();
+});
 
 
 
