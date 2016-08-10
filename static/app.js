@@ -1,5 +1,6 @@
 // load data
 var dataset = [];
+var scale = 2;
 $(document).ready(function(){
   $("#file").change(function(){
 
@@ -14,7 +15,6 @@ $(document).ready(function(){
         d.z = +d.z;
       });
       dataset = data;
-      datalength = dataset.length * 10;
       init();
   });
   });
@@ -28,9 +28,16 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1100  - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+// var margin2 = {top: 450, right: 10, bottom: 20, left: 40},
+//     height2 = 500 - margin2.top - margin2.bottom;
+
 var x = d3.time.scale()
     .domain(d3.extent(dataset, function(d) { return d.time;}))
-    .range([0, width * 2]);
+    .range([0, width]);
+
+// var x2 = d3.time.scale()
+//     .domain(d3.extent(dataset, function(d) { return d.time;}))
+//     .range([0, width]);
 
 var maxX = d3.max(dataset, function(d){return d.x});
 var maxY = d3.max(dataset, function(d){return d.y});
@@ -44,14 +51,20 @@ var yMinDomain = Math.min(minX, minY, minZ) - 1;
 
 
 var y = d3.scale.linear()
-    .domain([yMinDomain,yMaxDomain])
+    .domain([yMinDomain * scale ,yMaxDomain * scale])
     .range([height, 0]);
+
+var zoom = d3.behavior.zoom()
+    .x(x)
+    .y(y)
+    .scaleExtent([-1, 10])
+    .on("zoom", zoomed);
 
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
     .tickSize(1)
-    .ticks(d3.time.seconds, 3)
+    .ticks(d3.time.minutes, 1)
     .tickFormat(d3.time.format('%M : %S'));
 
 var yAxis = d3.svg.axis()
@@ -60,18 +73,12 @@ var yAxis = d3.svg.axis()
     .ticks(5)
     .tickSize(-width);
 
-var zoom = d3.behavior.zoom()
-    .x(x)
-    .y(y)
-    .scaleExtent([-1, 10])
-    .on("zoom", zoomed);
-
 var svg = d3.select("#visualisation").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    .call(zoom);
+    svg.call(zoom);
 
 svg.append("rect")
     .attr("width", width)
@@ -119,6 +126,16 @@ var lineFuncX = d3.svg.line()
   })
     .interpolate('linear');
 
+  var focus = area.append("g");
+
+  var selectArea = d3.svg.area()
+          .interpolate("basis")
+          .x(function(d){ return x(d.time); })
+          .y1(function(d){ return height })
+          .y0(function(d){ return y(y.domain()[1]); });
+
+  // area.attr("transform", "translate(71,89)scale(" + 0.4 + ")");
+
 // var areaLimit = 0;
 // var activity_area = d3.svg.area()
 //     .x(function(d, i) { 
@@ -137,7 +154,7 @@ var lineFuncX = d3.svg.line()
     .attr('d', line(dataset))
     .attr('stroke', color)
     .attr("opacity","0.6")
-    .attr('stroke-width', 2)
+    .attr('stroke-width', 0.5)
     .attr('fill', 'none');
   }
 
@@ -145,14 +162,55 @@ var lineFuncX = d3.svg.line()
   drawLines(lineFuncY, '#e74c3c');
   drawLines(lineFuncZ, '#2ecc71');
 
-d3.select("button").on("click", reset);
+  var brush = d3.svg.brush().x(x);
+
+  focus.append("path")
+        .attr("class", "area")
+        .datum(dataset)
+        .attr("d", selectArea)
+        .attr('fill', 'none');
+
+  svg.on("contextmenu", function(d,i){
+    console.log("mousedown");
+    d3.event.preventDefault();
+    zoom.on("zoom", null);
+    focused();
+  });
+
+  d3.select("button").on("click", reset);
+
+  brush.on('brushend', function(){
+    zoom.on("zoom", zoomed);
+  });
+
+  brush.on('brush', function(d){  
+    k = brush.extent();
+    j = dataset.filter(function(d){
+        return k[0] <= d.time && k[1] >=d.time;
+    });
+  // console.log(j)
+});
 
 
 function zoomed() {
   area.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  focus.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
   xAxis.ticks(5 * d3.event.scale);
   svg.select(".x.axis").call(xAxis);
   svg.select(".y.axis").call(yAxis);
+}
+
+function focused() {
+  focus.append("g")
+        .attr("class","x brush")
+        .call(brush)
+        .selectAll("rect")
+        .attr("height", height)
+        .style({
+            "fill": "#F64747",
+            "fill-opacity": "0.3"
+        });
+  console.log("focus");
 }
 
 function reset() {
