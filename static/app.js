@@ -3,6 +3,7 @@ var dataset = [];
 var scale = 2;
 var yMaxDomain = 0;
 var yMinDomain = 0;
+var import_value = 0;
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1100  - margin.left - margin.right,
@@ -154,7 +155,16 @@ var lineFuncX = d3.svg.line()
     j = dataset.filter(function(d){
         return k[0] <= d.time && k[1] >=d.time;
     });
-    console.log(j[0]);
+    console.log(k);
+    var import_length = j.length;
+    console.log(import_length);
+    console.log("import val " + import_value );
+    console.log("import length " + import_length );
+    for(var i = 0 ; i < import_length ; i++){
+      j[i].time = import_value + i;
+    }
+    import_value += import_length;
+    console.log(j);
     paste_on_workspace(j);
 });
 

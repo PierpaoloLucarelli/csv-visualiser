@@ -52,7 +52,6 @@ rect, g {
 	z-index: -1;
 }
 
-
 .blue{
 	background: #2980b9;
 }
@@ -62,6 +61,26 @@ rect, g {
 }
 .green{
 	background: #2ecc71;
+}
+
+.label-box{
+	position: absolute;
+	width: 300px;
+	top: 100px;
+	left: 50%;
+	margin-left: -150px;
+	text-align: center;
+	background: #eee;
+	border: 1px solid #ccc;
+	padding: 20px;
+	border-radius: 5px;
+	display: none;
+}
+
+.label-box input{
+	padding: 10px;
+	border: none;
+	border-radius: 5px;	
 }
 /*#visualisation{
 	padding: 20px;
