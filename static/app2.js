@@ -1,4 +1,5 @@
 var workspace_data = [];
+var totaldata = [];
 var area2;
 var x2;
 var y2;
@@ -23,7 +24,7 @@ function init2(){
 	x2 = d3.scale.linear().domain([0, dataset.length]).range([0, width]);
 
 	y2 = d3.scale.linear()
-	    .domain([yMinDomain * scale ,yMaxDomain * scale])
+	    .domain([yMinDomain,yMaxDomain])
 	    .range([height2, 0]);
 
 	var zoom = d3.behavior.zoom()
@@ -78,7 +79,7 @@ function init2(){
 	reset = function() {
   		d3.transition().duration(150).tween("zoom", function() {
     	var ix = d3.interpolate(x2.domain(), [0, dataset.length]),
-        iy = d3.interpolate(y2.domain(), [yMinDomain * scale,yMaxDomain * scale]);
+        iy = d3.interpolate(y2.domain(), [yMinDomain,yMaxDomain]);
     	return function(t) {
       		zoom.x(x2.domain(ix(t))).y(y2.domain(iy(t)));
       		svg2.select(".x.axis").call(xAxis2);
@@ -127,8 +128,9 @@ var draw_workspace = function(line, color){
 
 function paste_on_workspace(j){
 	reset();
+	workspace_data = j;
+	totaldata.push.apply(totaldata, j);
 	setTimeout(function(){
-		workspace_data = j;
 		draw_workspace(lineFuncX, '#2980b9');
  		draw_workspace(lineFuncY, '#e74c3c');
 		draw_workspace(lineFuncZ, '#2ecc71');
@@ -140,8 +142,22 @@ $("#reset").click(function(){
 });
 
 $("#step-back").click(function(){
+	var last_step = import_value.steps[import_value.steps.length - 1];
+	import_value.current -= last_step;
+	import_value.steps.pop();
 	var nchilds = $(".path-area").children().length;
 	$(".path-area").find("path:nth-last-child(-n+3)").remove();
+});
+
+$("#export").click(function(){
+	console.log(totaldata);
+	$.ajax({
+      type: 'POST',
+      url: "/savedata",
+      data: totaldata,
+      dataType: "application/json",
+      success: function() { alert("Save Complete") }
+});
 });
 
 

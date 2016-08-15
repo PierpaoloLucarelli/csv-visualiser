@@ -3,7 +3,11 @@ var dataset = [];
 var scale = 2;
 var yMaxDomain = 0;
 var yMinDomain = 0;
-var import_value = 0;
+var import_value = {
+  current: 0,
+  length: 0,
+  steps: []
+};
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1100  - margin.left - margin.right,
@@ -151,20 +155,23 @@ var lineFuncX = d3.svg.line()
   });
 
   $("#import").click(function(d){  
+    j = 0;
     k = brush.extent();
     j = dataset.filter(function(d){
         return k[0] <= d.time && k[1] >=d.time;
     });
-    console.log(k);
-    var import_length = j.length;
-    console.log(import_length);
-    console.log("import val " + import_value );
-    console.log("import length " + import_length );
-    for(var i = 0 ; i < import_length ; i++){
-      j[i].time = import_value + i;
+    console.log(dataset);
+    // console.log(j);
+    import_value.length = j.length;
+    import_value.steps.push(j.length);
+    console.log(import_value.steps);
+    console.log("import val " + import_value.current );
+    console.log("import length " + import_value.length );
+    for(var i = 0 ; i < import_value.length ; i++){
+      j[i].time = import_value.current + i;
     }
-    import_value += import_length;
-    console.log(j);
+    console.log("intin " + j.length);
+    import_value.current += import_value.length;
     paste_on_workspace(j);
 });
 

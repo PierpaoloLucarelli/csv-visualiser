@@ -1,10 +1,16 @@
 import csv
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, request
 app = Flask(__name__)
 
 @app.route('/')
 def getGraph():
 	return render_template('index.html')
+
+@app.route('/savedata', methods=['POST'])
+def saveData():
+	print("haha")
+	print(request.get_json())
+	return "ok"
 
 @app.route('/getCSV')
 def getCSV():
