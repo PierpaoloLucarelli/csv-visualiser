@@ -1,7 +1,9 @@
 import csv
 import os
+import io
 from flask import Flask, request, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = set(['csv'])
@@ -15,8 +17,14 @@ def getGraph():
 
 @app.route('/savedata', methods=['POST'])
 def saveData():
-	print("haha")
-	print(request)
+	print("doing")
+	content = request.json
+	with io.FileIO("./static/data.csv", "w") as file:
+		file.write("time,x,y,z\n")
+		for i, val in enumerate(content):
+			val["time"] = val["time"][:-1]
+			val["time"] = val['time'].replace("T", " ")
+			file.write("{0},{1},{2},{3}\n".format(val["time"], val["x"], val["y"], val["z"]))
 	return "ok"
 
 def allowed_file(filename):

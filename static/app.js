@@ -175,15 +175,16 @@ var lineFuncX = d3.svg.line()
           console.log(color);
           console.log("not empty");
           for(var i = 0 ; i < import_value.length ; i++){
-            j[i].time = import_value.current + i;
+            j[i].index = import_value.current + i;
             j[i].activity = label;
           }      
     } else {
           console.log("empty");
           for(var i = 0 ; i < import_value.length ; i++){
-            j[i].time = import_value.current + i;
+            j[i].index = import_value.current + i;
           }
     }
+    console.log(j);
     paste_on_workspace(j, label, color);
 });
 

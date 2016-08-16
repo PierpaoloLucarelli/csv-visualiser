@@ -92,7 +92,7 @@ function init2(){
 
 	 var lineFuncX = d3.svg.line()
     .x(function(d, i) {
-      return x2(d.time);
+      return x2(d.index);
     })
     .y(function(d) {
       return y2(d.x);
@@ -101,7 +101,7 @@ function init2(){
 
 	var lineFuncY = d3.svg.line()
 	    .x(function(d, i) {
-	    return x2(d.time);
+	    return x2(d.index);
 	})
 	    .y(function(d) {
 	    return y2(d.y);
@@ -110,7 +110,7 @@ function init2(){
 
   var lineFuncZ = d3.svg.line()
     .x(function(d, i) {
-    return x2(d.time);
+    return x2(d.index);
   })
     .y(function(d) {
     return y2(d.z);
@@ -152,18 +152,24 @@ $("#step-back").click(function(){
 	var last_step = import_value.steps[import_value.steps.length - 1];
 	import_value.current -= last_step;
 	import_value.steps.pop();
-	var nchilds = $(".path-area").children().length;
+	$(".path-area text:last-child").remove();
 	$(".path-area").find("path:nth-last-child(-n+3)").remove();
 });
 
 $("#export").click(function(){
 	console.log(totaldata);
 	$.ajax({
-      type: 'POST',
-      url: "/savedata",
-      data: totaldata,
-      dataType: "application/json",
-      success: function() { alert("Save Complete") }
+    type: 'POST',
+    // Provide correct Content-Type, so that Flask will know how to process it.
+    contentType: 'application/json',
+    // Encode your data as JSON.
+    data: JSON.stringify(totaldata),
+    // This is the type of data you're expecting back from the server.
+    dataType: 'json',
+    url: '/savedata',
+    success: function (res) {
+        console.log(res);
+    }
 });
 });
 
