@@ -154,25 +154,37 @@ var lineFuncX = d3.svg.line()
             "fill-opacity": "0.3"
   });
 
-  $("#import").click(function(d){  
+  $("#import").click(function(d){
     j = 0;
     k = brush.extent();
     j = dataset.filter(function(d){
         return k[0] <= d.time && k[1] >=d.time;
     });
-    console.log(dataset);
+    // console.log(dataset);
     // console.log(j);
     import_value.length = j.length;
     import_value.steps.push(j.length);
-    console.log(import_value.steps);
-    console.log("import val " + import_value.current );
-    console.log("import length " + import_value.length );
-    for(var i = 0 ; i < import_value.length ; i++){
-      j[i].time = import_value.current + i;
+    // console.log(import_value.steps);
+    // console.log("import val " + import_value.current );
+    // console.log("import length " + import_value.length );
+    var label = $("#label-input").val();
+    console.log(label);
+    if(label != ""){
+          // get color for label 
+          var color = $("#label-input option:selected").attr("color");
+          console.log(color);
+          console.log("not empty");
+          for(var i = 0 ; i < import_value.length ; i++){
+            j[i].time = import_value.current + i;
+            j[i].activity = label;
+          }      
+    } else {
+          console.log("empty");
+          for(var i = 0 ; i < import_value.length ; i++){
+            j[i].time = import_value.current + i;
+          }
     }
-    console.log("intin " + j.length);
-    import_value.current += import_value.length;
-    paste_on_workspace(j);
+    paste_on_workspace(j, label, color);
 });
 
 }

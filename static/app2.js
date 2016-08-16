@@ -126,14 +126,21 @@ var draw_workspace = function(line, color){
 	.attr('fill', 'none');
   }
 
-function paste_on_workspace(j){
+function paste_on_workspace(j, label, color){
 	reset();
 	workspace_data = j;
+	// add slection to total data
 	totaldata.push.apply(totaldata, j);
 	setTimeout(function(){
 		draw_workspace(lineFuncX, '#2980b9');
  		draw_workspace(lineFuncY, '#e74c3c');
 		draw_workspace(lineFuncZ, '#2ecc71');
+		area2.append("text")
+			.text(label)
+			.attr("x", x2(import_value.current + (j.length / 2)))
+			.attr("fill", color)
+			.attr("y", height2 - 20);
+		import_value.current += import_value.length;
 	}, 200);
 }
 

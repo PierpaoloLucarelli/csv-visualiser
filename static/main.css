@@ -22,6 +22,10 @@ rect {
 	color: red;
 }
 
+#submit-form{
+	display: block;
+}
+
 #overview{
 	display: block;
 }
