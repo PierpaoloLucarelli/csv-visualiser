@@ -9,7 +9,7 @@ var reset;
 function init2(){
 	console.log("init2");
 	var margin2 = {top: 20, right: 20, bottom: 30, left: 40}
-	    height2 = 200 - margin.top - margin.bottom;;
+	    height2 = 350 - margin.top - margin.bottom;;
 
 	var maxX = d3.max(dataset, function(d){return d.x});
 	var maxY = d3.max(dataset, function(d){return d.y});
@@ -156,21 +156,68 @@ $("#step-back").click(function(){
 	$(".path-area").find("path:nth-last-child(-n+3)").remove();
 });
 
+ function ConvertToCSV(objArray) {
+            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            var str = '';
+
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                for (var index in array[i]) {
+                    if (line != '') line += ','
+
+                    line += array[i][index];
+                }
+
+                str += line + '\r\n';
+            }
+
+            return str;
+        }
+
+
 $("#export").click(function(){
-	console.log(totaldata);
-	$.ajax({
-    type: 'POST',
-    // Provide correct Content-Type, so that Flask will know how to process it.
-    contentType: 'application/json',
-    // Encode your data as JSON.
-    data: JSON.stringify(totaldata),
-    // This is the type of data you're expecting back from the server.
-    dataType: 'json',
-    url: '/savedata',
-    success: function (res) {
-        console.log(res);
-    }
-});
+
+	var csvContent = "data:text/csv;charset=utf-8,time,x,y,z\n";
+	for(var i = 0 ; i < totaldata.length ; i++){
+		var time = totaldata[i].time;
+		csvContent += time.getFullYear() + '-' 
+		+ ("0" + (time.getMonth() + 1)).slice(-2) + '-'
+		+ ("0" + time.getDate()).slice(-2) + ' ' 
+		+ time.getHours() + ':'
+		+ time.getMinutes() + ':'
+		+ time.getSeconds() + '.'
+		+ time.getMilliseconds()+ ', ';
+		csvContent += totaldata[i].x + ', ';
+		csvContent += totaldata[i].y + ', ';
+		csvContent += totaldata[i].z;
+		csvContent += '\n';
+	}
+	console.log(csvContent);
+	var encodedUri = encodeURI(csvContent);
+	var link = document.createElement("a");
+	link.setAttribute("href", encodedUri);
+	link.setAttribute("download", "my_data.csv");
+	document.body.appendChild(link);
+	link.click();
+// 	console.log(totaldata);
+// 	console.log(totaldata);
+// 	$.ajax({
+//     type: 'POST',
+//     // Provide correct Content-Type, so that Flask will know how to process it.
+//     contentType: 'application/json',
+//     // Encode data as JSON.
+//     data: JSON.stringify(totaldata),
+//     dataType: 'json',
+//     url: '/savedata',
+//     complete: function (res) {
+//     	console.log(res);
+//         if(res.responseText){
+//         	alert("Save succesfull");
+//         } else {
+//         	alert("Something went wrong :/");
+//         }
+//     }
+// });
 });
 
 

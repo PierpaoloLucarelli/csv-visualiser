@@ -1,6 +1,6 @@
 // load data
 var dataset = [];
-var scale = 2;
+var scale = 1.2;
 var yMaxDomain = 0;
 var yMinDomain = 0;
 var import_value = {
@@ -11,15 +11,13 @@ var import_value = {
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1100  - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 300 - margin.top - margin.bottom;
 
 $(document).ready(function(){
-  $("#file").change(function(){
-
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S.%L").parse;
-    var filename = $(this).val().split('\\').pop(); 
+    $('.commands-container').show();
 
-    d3.csv("static/" + filename, function(data) {
+    d3.csv("static/data.csv", function(data) {
       data.forEach(function(d){
         d.time = parseDate(d.time)
         d.x = +d.x;
@@ -31,8 +29,6 @@ $(document).ready(function(){
       init2();
   });
   });
-
-});
 
 // initialize the svg
 var init = function(){
@@ -48,8 +44,8 @@ var minX = d3.min(dataset, function(d){return d.x});
 var minY = d3.min(dataset, function(d){return d.y});
 var minZ = d3.min(dataset, function(d){return d.z});
 
-var yMaxDomain = Math.max(maxX, maxY, maxZ) + 1;
-var yMinDomain = Math.min(minX, minY, minZ) - 1;
+var yMaxDomain = Math.max(maxX, maxY, maxZ);
+var yMinDomain = Math.min(minX, minY, minZ);
 
 var y = d3.scale.linear()
     .domain([yMinDomain * scale ,yMaxDomain * scale])
@@ -59,7 +55,7 @@ var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
     .tickSize(1)
-    .ticks(d3.time.minutes, 1)
+    .ticks(d3.time.seconds, 3)
     .tickFormat(d3.time.format('%M : %S'));
 
 var yAxis = d3.svg.axis()
@@ -86,6 +82,7 @@ svg.append("g")
 svg.append("g")
     .attr("class", "y axis")
     .call(yAxis);
+
 
 var lineFuncX = d3.svg.line()
     .x(function(d, i) {
@@ -152,6 +149,10 @@ var lineFuncX = d3.svg.line()
         .style({
             "fill": "#F64747",
             "fill-opacity": "0.3"
+  });
+
+  brush.on('brushend', function(){
+    $('#activity-lbl, #label-input').show();
   });
 
   $("#import").click(function(d){

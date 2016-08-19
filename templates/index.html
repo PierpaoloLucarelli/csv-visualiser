@@ -8,16 +8,9 @@
 
 	<div class='container' id="visualisation">
 		<h1 id="title" >selfBACK data visualisation</h1>
-		<select name="label" id="label-input">
-			<option color="#ccc" value="">Not specified</option>
-    		<option color="#3498db" value="Slow walk">Slow Walking</option>
-    		<option color="#2ecc71" value="Fast walk">Fast Walking</option>
-    		<option color="#e74c3c" value="Running">Running</option>
-    		<option color="#f39c12" value="Rest">Resting</option>
-  		</select>
 		<form id="upload" action="" method=post enctype=multipart/form-data>
       		<input id="file" type=file name=file>
-         	<input type=submit value=Upload>
+         	<input id='upload-btn' type=submit value=Upload>
     	</form>
 		<p id="filename">data.csv</p>
 	</div>
@@ -32,17 +25,24 @@
 		<p>Z</p>
 		</div>
 	</div>
-	<div class="label-box">
-		<h3>Please enter an activity label for this dataset</h3>
-		<input type="text" id="label" placeholder="Acivity Label"></input>
-		<input id="label-submit" type="submit"></input>
+
+	<div class='commands-container'>
+		<label id='activity-lbl'>Choose an activity</label>
+		<select name="label" id="label-input">
+				<option color="#ccc" value="">Not specified</option>
+	    		<option color="#3498db" value="Slow walk">Slow Walking</option>
+	    		<option color="#2ecc71" value="Fast walk">Fast Walking</option>
+	    		<option color="#e74c3c" value="Running">Running</option>
+	    		<option color="#f39c12" value="Rest">Resting</option>
+	  		</select>
+		<button id="reset">Reset</button>
+		<button id="import">Import</button>
+		<button id="step-back">Step back</button>
+		<button id="export">Export</button>
 	</div>
-	<button id="reset">Reset</button>
-	<button id="import">Import</button>
-	<button id="step-back">Step back</button>
-	<button id="export">Export</button>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 	<script type="text/javascript" src='../static/app.js'></script>
 	<script type="text/javascript" src='../static/app2.js'></script>
 </body>

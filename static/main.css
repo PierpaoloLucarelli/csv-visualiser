@@ -22,12 +22,33 @@ rect {
 	color: red;
 }
 
+#file{
+	display: inline-block;
+}
 #submit-form{
 	display: block;
 }
 
+#activity-lbl, #label-input{
+	display: none;
+}
+
+.commands-container{
+	text-align: center;
+	display: none;
+	margin-top: 50px;
+}
+
 #overview{
 	display: block;
+}
+
+#upload{
+	text-align: center;
+}
+
+#upload-btn{
+	display: inline-block;
 }
 
 rect, g {
