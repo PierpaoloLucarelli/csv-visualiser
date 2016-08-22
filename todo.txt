@@ -1,2 +1,4 @@
-biger workarea
-add tooltip
+andorid timestamp
+disalay label on top
+number of ticks option
+

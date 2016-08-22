@@ -177,7 +177,7 @@ $("#step-back").click(function(){
 
 $("#export").click(function(){
 
-	var csvContent = "data:text/csv;charset=utf-8,time,x,y,z\n";
+	var csvContent = "data:text/csv;charset=utf-8,time,x,y,z,activity\n";
 	for(var i = 0 ; i < totaldata.length ; i++){
 		var time = totaldata[i].time;
 		csvContent += time.getFullYear() + '-' 
@@ -189,7 +189,8 @@ $("#export").click(function(){
 		+ time.getMilliseconds()+ ', ';
 		csvContent += totaldata[i].x + ', ';
 		csvContent += totaldata[i].y + ', ';
-		csvContent += totaldata[i].z;
+		csvContent += totaldata[i].z + ', ';
+		csvContent += totaldata[i].activity;
 		csvContent += '\n';
 	}
 	console.log(csvContent);
@@ -199,25 +200,6 @@ $("#export").click(function(){
 	link.setAttribute("download", "my_data.csv");
 	document.body.appendChild(link);
 	link.click();
-// 	console.log(totaldata);
-// 	console.log(totaldata);
-// 	$.ajax({
-//     type: 'POST',
-//     // Provide correct Content-Type, so that Flask will know how to process it.
-//     contentType: 'application/json',
-//     // Encode data as JSON.
-//     data: JSON.stringify(totaldata),
-//     dataType: 'json',
-//     url: '/savedata',
-//     complete: function (res) {
-//     	console.log(res);
-//         if(res.responseText){
-//         	alert("Save succesfull");
-//         } else {
-//         	alert("Something went wrong :/");
-//         }
-//     }
-// });
 });
 
 

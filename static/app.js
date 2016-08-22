@@ -25,6 +25,7 @@ $(document).ready(function(){
         d.z = +d.z;
       });
       dataset = data;
+      console.log(dataset);
       init();
       init2();
   });
@@ -55,7 +56,7 @@ var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
     .tickSize(1)
-    .ticks(d3.time.seconds, 3)
+    .ticks(d3.time.seconds, 10)
     .tickFormat(d3.time.format('%M : %S'));
 
 var yAxis = d3.svg.axis()
@@ -151,7 +152,31 @@ var lineFuncX = d3.svg.line()
             "fill-opacity": "0.3"
   });
 
+    area = svg.append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("class","path-area");
+
+  var lastActivity = "";
+  for(var i = 0 ; i < dataset.length ; i ++){
+    currActivity = dataset[i].activity;
+    // console.log(dataset[i].activity);
+    if(currActivity!=lastActivity){
+      area.append("text")
+      .text(dataset[i].activity)
+      .attr("x", x(dataset[i].time))
+      .attr("fill", "red")
+      .attr("y", height - 20);
+      lastActivity = currActivity;
+    }
+  }
+
   brush.on('brushend', function(){
+    var ext = brush.extent();
+
+    $('#extent').text("SELECTED: " + ext[0] + ", TO: " + ext[1]);
+    $('#extent').show();
     $('#activity-lbl, #label-input').show();
   });
 

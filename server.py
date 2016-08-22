@@ -16,30 +16,12 @@ def getGraph():
 	return render_template('index.html')
 
 @app.after_request
-@app.after_request
 def add_header(r):
     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
-
-@app.route('/savedata', methods=['POST'])
-def saveData():
-	content = request.json
-	filename = datetime.today().strftime("%m-%d-%Y")
-	with io.FileIO("./static/{0}.csv".format(filename), "w") as file:
-		# wirte headers
-		file.write("time,x,y,z,activity\n")
-		# write content
-		for i, val in enumerate(content):
-			val["time"] = val["time"][:-1]
-			val["time"] = val['time'].replace("T", " ")
-			if('activity' in val):
-				file.write("{0},{1},{2},{3},{4}\n".format(val["time"], val["x"], val["y"], val["z"], val["activity"]))
-			else:
-				file.write("{0},{1},{2},{3}\n".format(val["time"], val["x"], val["y"], val["z"]))
-	return send_from_directory(directory=app.config['UPLOAD_FOLDER'], filename=filename+'.csv')
 
 def allowed_file(filename):
 	return '.' in filename and \
