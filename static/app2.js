@@ -5,12 +5,13 @@ var x2;
 var y2;
 var reset;
 
-
+// draw workspace area
 function init2(){
 	console.log("init2");
 	var margin2 = {top: 20, right: 20, bottom: 30, left: 40}
 	    height2 = 350 - margin.top - margin.bottom;;
 
+	// get Y domain values
 	var maxX = d3.max(dataset, function(d){return d.x});
 	var maxY = d3.max(dataset, function(d){return d.y});
 	var maxZ = d3.max(dataset, function(d){return d.z});
@@ -44,7 +45,7 @@ function init2(){
 	var svg2 = d3.select("#visualisation").append("svg")
 	    .attr("width", width + margin2.left + margin2.right)
 	    .attr("height", height2 + margin2.top + margin2.bottom)
-	  .append("g")
+	  	.append("g")
 	    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
 	    .call(zoom);
 
@@ -78,37 +79,37 @@ function init2(){
 
 	reset = function() {
   		d3.transition().duration(150).tween("zoom", function() {
-    	var ix = d3.interpolate(x2.domain(), [0, dataset.length]),
-        iy = d3.interpolate(y2.domain(), [yMinDomain,yMaxDomain]);
-    	return function(t) {
-      		zoom.x(x2.domain(ix(t))).y(y2.domain(iy(t)));
-      		svg2.select(".x.axis").call(xAxis2);
-      		svg2.select(".y.axis").call(yAxis2);
-      		area2.attr("transform", "translate(0,0)scale(1)");
-    	};
-  	});
+	    	var ix = d3.interpolate(x2.domain(), [0, dataset.length]),
+	        iy = d3.interpolate(y2.domain(), [yMinDomain,yMaxDomain]);
+	    	return function(t) {
+	      		zoom.x(x2.domain(ix(t))).y(y2.domain(iy(t)));
+	      		svg2.select(".x.axis").call(xAxis2);
+	      		svg2.select(".y.axis").call(yAxis2);
+	      		area2.attr("transform", "translate(0,0)scale(1)");
+	    	};
+  		});
 	}
 }
 
-	 var lineFuncX = d3.svg.line()
+var lineFuncX = d3.svg.line()
+.x(function(d, i) {
+  return x2(d.index);
+})
+.y(function(d) {
+  return y2(d.x);
+})
+.interpolate('linear');
+
+var lineFuncY = d3.svg.line()
     .x(function(d, i) {
-      return x2(d.index);
-    })
+    return x2(d.index);
+})
     .y(function(d) {
-      return y2(d.x);
-    })
-    .interpolate('linear');
-
-	var lineFuncY = d3.svg.line()
-	    .x(function(d, i) {
-	    return x2(d.index);
-	})
-	    .y(function(d) {
-	    return y2(d.y);
-	}).interpolate('linear');
+    return y2(d.y);
+}).interpolate('linear');
 
 
-  var lineFuncZ = d3.svg.line()
+var lineFuncZ = d3.svg.line()
     .x(function(d, i) {
     return x2(d.index);
   })
@@ -124,7 +125,7 @@ var draw_workspace = function(line, color){
 	.attr("opacity","0.6")
 	.attr('stroke-width', 0.5)
 	.attr('fill', 'none');
-  }
+}
 
 function paste_on_workspace(j, label, color){
 	reset();
@@ -156,25 +157,23 @@ $("#step-back").click(function(){
 	$(".path-area").find("path:nth-last-child(-n+3)").remove();
 });
 
- function ConvertToCSV(objArray) {
-            var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-            var str = '';
+function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
 
-            for (var i = 0; i < array.length; i++) {
-                var line = '';
-                for (var index in array[i]) {
-                    if (line != '') line += ','
-
-                    line += array[i][index];
-                }
-
-                str += line + '\r\n';
-            }
-
-            return str;
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ',';
+            line += array[i][index];
         }
 
+        str += line + '\r\n';
+    }
+    return str;
+}
 
+// save the workspace .csv to download folder
 $("#export").click(function(){
 
 	var csvContent = "data:text/csv;charset=utf-8,time,x,y,z,activity\n";

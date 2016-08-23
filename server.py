@@ -15,6 +15,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def getGraph():
 	return render_template('index.html')
 
+#disable chache 
 @app.after_request
 def add_header(r):
     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -45,7 +46,7 @@ def upload_file():
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'data.csv'))
 			with open(os.path.join(app.config['UPLOAD_FOLDER'], 'data.csv'), 'r') as original:
 				data = original.read()
-				if(data[0]=='2'):
+				if(data[0]=='2'): #add header only if missing
 					with open(os.path.join(app.config['UPLOAD_FOLDER'], 'data.csv'), 'w') as modified:
 						modified.write("time,x,y,z,activity\n" + data)
 			return redirect("/")
