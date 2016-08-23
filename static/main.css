@@ -29,6 +29,18 @@ rect {
 	display: block;
 }
 
+#plus{
+	top: 300px;
+	position: absolute;
+	left: 30px;
+}
+
+#minus{
+	top: 350px;
+	position: absolute;
+	left: 30px;
+}
+
 #activity-lbl, #label-input{
 	display: none;
 }
@@ -58,6 +70,18 @@ rect, g {
 .container{
 	text-align: center;
 	margin: 0 auto;
+}
+
+.buttons{
+	background: #fff;
+	border: 1px solid #ccc;
+	padding: 5px;
+	border-radius: 5px;
+	color: #444;
+}
+
+.buttons:hover{
+	background: #ccc;
 }
 
 .legend{

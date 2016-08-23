@@ -30,7 +30,6 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
 	if request.method == 'POST':
-		print(str(request.files))
 		# check if the post request has the file part
 		if 'file' not in request.files:
 			print('No file part')
@@ -44,10 +43,11 @@ def upload_file():
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'data.csv'))
-			with open(os.path.join(app.config['UPLOAD_FOLDER'], 'data.csv'), 'r+') as f:
-				content = f.read()
-				f.seek(0, 0)
-				f.write(content)
+			with open(os.path.join(app.config['UPLOAD_FOLDER'], 'data.csv'), 'r') as original:
+				data = original.read()
+				if(data[0]=='2'):
+					with open(os.path.join(app.config['UPLOAD_FOLDER'], 'data.csv'), 'w') as modified:
+						modified.write("time,x,y,z,activity\n" + data)
 			return redirect("/")
 	return render_template('index.html')
 

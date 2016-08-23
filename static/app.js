@@ -8,6 +8,7 @@ var import_value = {
   length: 0,
   steps: []
 };
+var ticks = 10;
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1100  - margin.left - margin.right,
@@ -55,9 +56,9 @@ var y = d3.scale.linear()
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .tickSize(1)
-    .ticks(d3.time.seconds, 10)
-    .tickFormat(d3.time.format('%M : %S'));
+    .tickSize(10)
+    .ticks(d3.time.seconds, ticks)
+    .tickFormat(d3.time.format('%M:%S'));
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -164,11 +165,19 @@ var lineFuncX = d3.svg.line()
     // console.log(dataset[i].activity);
     if(currActivity!=lastActivity){
       area.append("text")
-      .text(dataset[i].activity)
-      .attr("x", x(dataset[i].time))
-      .attr("fill", "red")
-      .attr("y", height - 20);
+        .text(dataset[i].activity)
+        .attr("x", x(dataset[i].time))
+        .attr("fill", "red")
+        .attr("y", height - 20);
       lastActivity = currActivity;
+      svg.append("line")
+        .attr("x1", x(dataset[i].time))  //<<== change your code here
+        .attr("y1", 0)
+        .attr("x2", x(dataset[i].time))  //<<== and here
+    .attr("y2", height)
+    .style("stroke-width", 0.5)
+    .style("stroke", "grey")
+    .style("fill", "none");
     }
   }
 
@@ -213,6 +222,18 @@ var lineFuncX = d3.svg.line()
     console.log(j);
     paste_on_workspace(j, label, color);
 });
+
+  $("#plus").click(function(){
+    ticks++;
+    xAxis.ticks(d3.time.seconds, ticks);
+    svg.select(".x.axis").call(xAxis);
+  });
+
+  $('#minus').click(function(){
+      ticks--;
+      xAxis.ticks(d3.time.seconds, ticks);
+      svg.select(".x.axis").call(xAxis);
+  });
 
 }
 
