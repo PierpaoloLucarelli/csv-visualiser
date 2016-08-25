@@ -35,6 +35,23 @@ rect {
 	left: 30px;
 }
 
+.valueLabels{
+	position: absolute;
+}
+
+#xVal{
+	top: 500px;
+	left: 30px;
+}
+#yVal{
+	top: 530px;
+	left: 30px;
+}
+#zVal{
+	top: 560px;
+	left: 30px;
+}
+
 #minus{
 	top: 350px;
 	position: absolute;
@@ -50,6 +67,8 @@ rect {
 	display: none;
 	margin-top: 50px;
 }
+
+
 
 #overview{
 	display: block;
@@ -125,6 +144,8 @@ rect, g {
 	border-radius: 5px;
 	display: none;
 }
+
+
 
 .label-box input{
 	padding: 10px;

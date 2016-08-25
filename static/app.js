@@ -178,13 +178,13 @@ for(var i = 0 ; i < dataset.length ; i ++){
     area.append("text")
       .text(dataset[i].activity)
       .attr("x", x(dataset[i].time))
-      .attr("fill", "red")
+      .attr("fill", "black")
       .attr("y", height - 20);
     lastActivity = currActivity;
     svg.append("line")
-      .attr("x1", x(dataset[i].time))  //<<== change your code here
+      .attr("x1", x(dataset[i].time))
       .attr("y1", 0)
-      .attr("x2", x(dataset[i].time))  //<<== and here
+      .attr("x2", x(dataset[i].time)) 
   .attr("y2", height)
   .style("stroke-width", 0.5)
   .style("stroke", "grey")
@@ -196,7 +196,8 @@ for(var i = 0 ; i < dataset.length ; i ++){
 brush.on('brushend', function(){
   var ext = brush.extent();
 
-  $('#extent').text("SELECTED: " + ext[0] + ", TO: " + ext[1]);
+  $('#extent').text("SELECTED: " + ext[0].getHours() + ":" + ext[0].getMinutes() + ":" + ext[0].getSeconds() + 
+                      ", TO: " + ext[1].getHours() + ":" + ext[1].getMinutes() + ":" + ext[1].getSeconds());
   $('#extent').show();
   $('#activity-lbl, #label-input').show();
 });

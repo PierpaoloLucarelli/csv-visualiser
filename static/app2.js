@@ -35,6 +35,7 @@ function init2(){
     .on("zoom", zoomed);
 
 	var xAxis2 = d3.svg.axis().scale(x2).tickSize(-height2).tickSubdivide(true);
+	var bisectDate = d3.bisector(function(d) { return d.time; }).left; // **
 
 	var yAxis2 = d3.svg.axis()
 	    .scale(y2)
@@ -70,6 +71,49 @@ function init2(){
 	    .append("g")
 	    .attr("class","path-area");
 
+
+	var lineSvg = svg2.append("g"); 
+	var focus = svg2.append("g")
+    .style("display", "none");
+
+
+    focus.append("line")
+         .attr("x1", x2(0))
+      	.attr("y1", 0)
+      	.attr("x2", x2(0)) 
+      	.attr("y2", height2)
+      	.style("stroke-width", 0.5)
+      	.style("stroke", "grey")
+      	.style("fill", "none");
+    svg2.append("rect")
+        .attr("width", width)
+        .attr("height", height2)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .on("mouseover", function() { focus.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mousemove", mousemove);
+
+ function mousemove() { 
+        var x0 = x2.invert(d3.mouse(this)[0]),
+        	y0 = x2.invert(d3.mouse(this)[1]),
+            i = bisectDate(dataset, x0, 1),
+            d0 = dataset[i - 1],
+            d1 = dataset[i],
+            d = x0 - d0.time > d1.time - x0 ? d1 : d0;
+            var valuesIndex = Math.round(x0);
+            if(totaldata[valuesIndex]){
+            	$("#xVal span").text(totaldata[valuesIndex].x);
+            	$("#yVal span").text(totaldata[valuesIndex].y);
+            	$("#zVal span").text(totaldata[valuesIndex].z);
+            } else {
+            	console.log("no values");
+            }
+
+        focus.select("line")
+            .attr("transform",
+                  "translate(" + x2(x0) + ",0)");
+    }                                        
 
 	function zoomed() {
   		area2.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
