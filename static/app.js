@@ -185,10 +185,10 @@ for(var i = 0 ; i < dataset.length ; i ++){
       .attr("x1", x(dataset[i].time))
       .attr("y1", 0)
       .attr("x2", x(dataset[i].time)) 
-  .attr("y2", height)
-  .style("stroke-width", 0.5)
-  .style("stroke", "grey")
-  .style("fill", "none");
+      .attr("y2", height)
+      .style("stroke-width", 0.5)
+      .style("stroke", "grey")
+      .style("fill", "none");
   }
 }
 
