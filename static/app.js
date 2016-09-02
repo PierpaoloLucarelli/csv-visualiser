@@ -177,7 +177,7 @@ for(var i = 0 ; i < dataset.length ; i ++){
   if(currActivity!=lastActivity){
     area.append("text")
       .text(dataset[i].activity)
-      .attr("x", x(dataset[i].time))
+      .attr("x", x(dataset[i].time) + 20)
       .attr("fill", "black")
       .attr("y", height - 20);
     lastActivity = currActivity;

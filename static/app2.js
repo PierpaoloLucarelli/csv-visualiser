@@ -182,9 +182,17 @@ function paste_on_workspace(j, label, color){
 		draw_workspace(lineFuncZ, '#2ecc71');
 		area2.append("text")
 			.text(label)
-			.attr("x", x2(import_value.current + (j.length / 2)))
+			.attr("x", x2(import_value.current + 100))
 			.attr("fill", color)
 			.attr("y", height2 - 20);
+		area2.append("line")
+      		.attr("x1", x2(import_value.current))
+      		.attr("y1", 0)
+      		.attr("x2", x2(import_value.current)) 
+      		.attr("y2", height2)
+      		.style("stroke-width", 0.5)
+      		.style("stroke", color)
+      		.style("fill", "none");
 		import_value.current += import_value.length;
 	}, 200);
 }
@@ -197,6 +205,7 @@ $("#step-back").click(function(){
 	var last_step = import_value.steps[import_value.steps.length - 1];
 	import_value.current -= last_step;
 	import_value.steps.pop();
+	$(".path-area line:last-child").remove();
 	$(".path-area text:last-child").remove();
 	$(".path-area").find("path:nth-last-child(-n+3)").remove();
 });
